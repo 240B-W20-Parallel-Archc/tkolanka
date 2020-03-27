@@ -1,0 +1,74 @@
+set term pngcairo  # unlike 'png' we get anti-aliasing
+
+set xlabel "Size of linked list"
+set ylabel "ns per element"
+set nokey
+
+set xtics ( \
+	"1kB"       1024, "10kB"       10000, "100kB"    100000, \
+	"1MB"    1000000, "10MB"    10000000, "100MB" 100000000, \
+	"1GB" 1000000000, "10GB" 10000000000.0 )
+
+set logscale x
+set logscale y
+
+# define axis
+# remove border on top and right and set color to gray
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set tics nomirror
+
+# define grid
+set style line 12 lc rgb '#808080' lt 0 lw 1
+set grid back ls 12
+
+ymin = 0.5
+ymax = 2000
+set yrange [ymin:ymax]
+unset autoscale y
+xf  = 1.0       # scale of x-axis
+L1  =  32*1024          # 32 kB L1 cache
+L2  = 256*1024          # 256 kB L2 cache
+L3  = 20480*1024        # 20 MB L3 cache
+
+set output "rw_8threads.png"
+set arrow from (xf*L1),ymin to (xf*L1),ymax nohead  # L1
+set arrow from (xf*L2),ymin to (xf*L2),ymax nohead  # L2
+set arrow from (xf*L3),ymin to (xf*L3),ymax nohead  # L3
+plot 'rw_thread_8' u 1:2 title '4 threads' with lines lw 2
+
+set output "rd_8threads.png"
+set arrow from (xf*L1),ymin to (xf*L1),ymax nohead  # L1
+set arrow from (xf*L2),ymin to (xf*L2),ymax nohead  # L2
+set arrow from (xf*L3),ymin to (xf*L3),ymax nohead  # L3
+plot 'rd_thread_8' u 1:2 title '8 threads' with lines lw 2
+
+set output "rd_rw_8threads.png"
+set key right bottom font ",9"
+set arrow from (xf*L1),ymin to (xf*L1),ymax nohead  # L1
+set arrow from (xf*L2),ymin to (xf*L2),ymax nohead  # L2
+set arrow from (xf*L3),ymin to (xf*L3),ymax nohead  # L3
+plot 'rw_thread_8' u 1:2 title 'read-modify-write' with lines lw 2, \
+		'rd_thread_8' u 1:2 title 'read-only' with lines lw 2
+
+set output "rw_lines.png"
+set key right bottom font ",9"
+set arrow from (xf*L1),ymin to (xf*L1),ymax nohead  # L1
+set arrow from (xf*L2),ymin to (xf*L2),ymax nohead  # L2
+set arrow from (xf*L3),ymin to (xf*L3),ymax nohead  # L3
+plot 'rw_thread_1' u 1:2 title '1 thread' with lines lw 2, \
+		'rw_thread_2' u 1:2 title '2 threads' with lines lw 2, \
+		'rw_thread_4' u 1:2 title '4 threads' with lines lw 2, \
+		'rw_thread_8' u 1:2 title '8 threads' with lines lw 2, \
+		'rw_thread_16' u 1:2 title '16 threads' with lines lw 2
+
+set output "rd_lines.png"
+set key right bottom font ",9"
+set arrow from (xf*L1),ymin to (xf*L1),ymax nohead  # L1
+set arrow from (xf*L2),ymin to (xf*L2),ymax nohead  # L2
+set arrow from (xf*L3),ymin to (xf*L3),ymax nohead  # L3
+plot 'rd_thread_1' u 1:2 title '1 thread' with lines lw 2, \
+		'rd_thread_2' u 1:2 title '2 threads' with lines lw 2, \
+		'rd_thread_4' u 1:2 title '4 threads' with lines lw 2, \
+		'rd_thread_8' u 1:2 title '8 threads' with lines lw 2, \
+		'rd_thread_16' u 1:2 title '16 threads' with lines lw 2
