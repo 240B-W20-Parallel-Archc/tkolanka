@@ -1,0 +1,10 @@
+The doit.sh file can be used for compiling the program using make and for executing a simple, single thread, read-only case
+while storing the data in an output file.
+
+In order to run the read-modify-write case, the #define RMW in the memory_time.cpp must be uncommented and the doit.sh file
+should be re-run. The same procedure can be followed for changing the number of threads.
+
+All of the collected data has been stored in the data/ folder in the repo. The plots can be obtained from this data
+using the provided plot.plg file as follows:
+
+gnuplot plot.plg
